@@ -59,7 +59,22 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+#ifdef __GNUC__
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif
+#define CLEAR() printf("\033[2J")								//清屏
+#define MOVEUP(x) printf("\033[%dA", (x))
+#define MOVEDOWN(x) printf("\033[%dB", (x))
+#define MOVELEFT(y) printf("\033[%dD", (y))
+#define MOVERIGHT(y) printf("\033[%dC",(y))
+#define RESET_CURSOR() printf("\033[H")								//设置：重置光标至原点
+#define MOVETO(x,y) printf("\033[%d;%dH", (x), (y))	//设置：移动光标至x行y列
+#define CLEARLINE() printf("\033[K")								//设置：清楚从光标到行尾的字符
+#define SAVEPOS() printf("\033[s")								//设置：保存光标位置
+#define LODEPOS() printf("\033[u")								//设置：恢复光标位置
+#define RESET() printf("\033[0m")								//设置：清楚所有设置
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -272,7 +287,11 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+PUTCHAR_PROTOTYPE
+{
+    HAL_UART_Transmit(&huart1 , (uint8_t *)&ch, 1, 0xFFFF);
+    return ch;
+}
 /* USER CODE END 4 */
 
 /**
